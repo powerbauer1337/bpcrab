@@ -1,0 +1,9 @@
+{
+          "name": "com.bpcrab.downloader",
+          "description": "Beatport Downloader Host",
+          "path": "D:\\coding\\bpcrab\\bpc-native-app",
+          "type": "stdio",
+          "allowed_origins": [
+            "chrome-extension://dieeaojhhilhlpaohhccjanaboggdmob/"
+          ]
+        }

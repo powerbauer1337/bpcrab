@@ -11,9 +11,6 @@
       "matches": [
         "*://*.beatport.com/*"
       ],
-      "js": [
-        "content.js"
-      ]
     }
   ],
   "icons": {
