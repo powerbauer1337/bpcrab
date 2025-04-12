@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "Beatport Downloader",
   "version": "1.0",
-  "description": "Enhance your Beatport experience by downloading tracks directly from the website using a powerful Go application. Select tracks, manage your downloads, and enjoy your music offline.",
+  "description": "Download Beatport tracks using a Go app",
   "background": {
     "service_worker": "background.js"
   },
@@ -16,13 +16,6 @@
       ]
     }
   ],
-  "action": {
-    "default_popup": "popup.html",
-    "default_icon": {
-      "16": "icons/icon16.png",
-      "48": "icons/icon48.png"
-    }
-  },
   "icons": {
     "16": "icons/icon16.png",
     "48": "icons/icon48.png"
@@ -31,52 +24,6 @@
     "activeTab",
     "storage",
     "webNavigation"
-  ]
-```
-```javascript
-//background.js
-
-function connectToWebSocket() {
-  const ws = new WebSocket('ws://localhost:8080');
-
-  ws.addEventListener('open', (event) => {
-    console.log('Connected to WebSocket server');
-  });
-
-  ws.addEventListener('message', (event) => {
-    console.log('Message from server:', event.data);
-  });
-
-  ws.addEventListener('error', (event) => {
-    console.error('WebSocket error:', event);
-    setTimeout(connectToWebSocket, 1000);
-  });
-
-  ws.addEventListener('close', (event) => {
-    console.log('Disconnected from WebSocket server. Reconnecting...');
-    setTimeout(connectToWebSocket, 1000);
-  });
-
-  chrome.storage.onChanged.addListener(function (changes, namespace) {
-    for (let [key, { oldValue, newValue }] of Object.entries(changes)) {
-      console.log(
-        `Storage key "${key}" in namespace "${namespace}" changed.`,
-        `Old value was "${oldValue}", new value is "${newValue}".`
-      );
-      if (key === 'selectedTracks') {
-        console.log("selectedTracks changed", newValue)
-      }
-    }
-  });
-  return ws
-}
-
-let ws = connectToWebSocket()
-
-function sendMessage(message) {
-  if (ws.readyState === WebSocket.OPEN) {
-    ws.send(JSON.stringify(message));
-  } else {
-    console.error('WebSocket is not open.');
-  }
+  ],
+  "action": { "default_popup": "popup.html" }
 }
