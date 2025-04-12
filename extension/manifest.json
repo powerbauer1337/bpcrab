@@ -32,7 +32,6 @@
     "storage",
     "webNavigation"
   ]
-}
 ```
 ```javascript
 //background.js

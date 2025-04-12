@@ -1,4 +1,4 @@
-let popupLoaded = false;
+let isConnected = false;
 
 function connectToWebSocket() {
   return new Promise((resolve, reject) => {
@@ -8,7 +8,7 @@ function connectToWebSocket() {
       } else {
         const error = new Error("Failed to connect to WebSocket");
         console.error(error);
-        displayError(error.message);
+        updateConnectionStatus(false);
         reject(error);
       }
     });
@@ -72,6 +72,36 @@ function addTrackToSelected(track) {
   selectedTracksDiv.appendChild(newTrackElement);
 }
 
+function removeTrackFromSelected(trackId) {
+  const selectedTracksDiv = document.getElementById("selected-tracks");
+  if (!selectedTracksDiv) {
+    console.error("selected-tracks div not found");
+    return;
+  }
+
+  const trackElement = document.getElementById(`selected-${trackId}`);
+  if (trackElement) {
+    selectedTracksDiv.removeChild(trackElement);
+  }
+}
+
+function displaySelectedTracks(selectedTracks) {
+  const selectedTracksDiv = document.getElementById("selected-tracks");
+  if (!selectedTracksDiv) {
+    console.error("selected-tracks div not found");
+    return;
+  }
+
+  selectedTracksDiv.innerHTML = "";
+
+  selectedTracks.forEach((track) => {
+    const newTrackElement = document.createElement("div");
+    newTrackElement.id = `selected-${track.id}`;
+    newTrackElement.textContent = `${track.artist} - ${track.name} (ID: ${track.id})`;
+    selectedTracksDiv.appendChild(newTrackElement);
+  });
+}
+
 function updateDownloadProgress(trackId, status) {
   const downloadProgressDiv = document.getElementById("download-progress");
   if (!downloadProgressDiv) {
@@ -89,19 +119,37 @@ function updateDownloadProgress(trackId, status) {
   let message = "";
   switch (status) {
     case "downloading":
-      message = `Downloading: ${artist} - ${name} (ID: ${trackId})`;
+      message = `Downloading: ${trackElement.textContent}`;
       break;
     case "completed":
-      message = `Completed: ${artist} - ${name} (ID: ${trackId})`;
+      message = `Completed: ${trackElement.textContent}`;
       break;
     case "error":
-      message = `Error: ${artist} - ${name} (ID: ${trackId})`;
+      message = `Error: ${trackElement.textContent}`;
       break;
     default:
-      message = `Unknown status: ${status} for ${artist} - ${name} (ID: ${trackId})`;
+      message = `Unknown status: ${status} for ${trackElement.textContent}`;
   }
   if (trackElement) {
     trackElement.textContent = message;
+  }
+}
+
+function updateConnectionStatus(status) {
+  isConnected = status;
+  const statusDiv = document.getElementById("connection-status");
+  if (statusDiv) {
+    statusDiv.textContent = isConnected
+      ? "Connected to BeatportDL"
+      : "Disconnected from BeatportDL";
+    statusDiv.style.color = isConnected ? "green" : "red";
+  }
+}
+
+function displayMessage(message) {
+  const messageDiv = document.getElementById("message-display");
+  if (messageDiv) {
+    messageDiv.textContent = message;
   }
 }
 
