@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Beatport Downloader</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            width: 300px;
+            padding: 10px;
+        }
+
+        h1 {
+            font-size: 1.2em;
+            margin-bottom: 5px;
+        }
+
+        #selected-tracks, #download-progress {
+            border: 1px solid #ccc;
+            padding: 5px;
+            margin-bottom: 10px;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        .track {
+            margin-bottom: 5px;
+            padding: 5px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .error {
+            color: red;
+            font-size: 0.9em;
+        }
+
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <h1>Beatport Downloader</h1>
+    <h2>Selected Tracks</h2>
+    <div id="selected-tracks">
+        <p id="no-tracks">No tracks selected.</p>
+    </div>
+    <h2>Download Progress</h2>
+    <div id="download-progress"></div>
+    <div id="error-message" class="error"></div>
+    <button id="send-tracks">Start Download</button>
+    <script src="popup.js"></script>
+</body>
+</html>
