@@ -1,45 +1,48 @@
-// background.js
+--- a/extension/background.js
++++ b/extension/background.js
 
-function connectToWebSocket() {
-  let ws = new WebSocket('ws://localhost:8080');
-
-  ws.addEventListener('open', (event) => {
-    console.log('Connected to WebSocket server');
-  });
-
-  ws.addEventListener('message', (event) => {
-    console.log('Message from server:', event.data);
-    try {
-      const message = JSON.parse(event.data);
-    } catch (e) {
-      console.error("Invalid JSON from server", e);
-    }
-  });
-
-  ws.addEventListener('error', (event) => {
-    console.error('WebSocket error:', event);
-    setTimeout(connectToWebSocket, 1000);
-  });
-
-  ws.addEventListener('close', (event) => {
-    console.log('Disconnected from WebSocket server. Reconnecting...');
-    setTimeout(connectToWebSocket, 1000);
-  });
-
-  return ws
-}
-
-function sendMessage(message, websocket) {
-  if (websocket.readyState === WebSocket.OPEN) {
-    websocket.send(JSON.stringify(message));
-  } else {
-    console.error('WebSocket is not open.');
-    connectToWebSocket()
-  }
-}
-
-chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
-  if (request.url) {
-    sendMessage({ url: request.url }, ws);
-  }
-});
+ let nativePort = null;
+ 
+ function connectNative() {
+   nativePort = chrome.runtime.connectNative('com.bpcrab.downloader');
+ 
+   nativePort.onConnect.addListener(() => {
+     console.log('Connected to native messaging host.');
+   });
+ 
+   nativePort.onMessage.addListener((message) => {
+     try {
+         console.log('Received message from native host:', message);
+     } catch (error) {
+       console.error('Error parsing message from native host:', error);
+     }
+   });
+ 
+   nativePort.onDisconnect.addListener(() => {
+     console.log('Disconnected from native messaging host.');
+     nativePort = null
+   });
+ }
+ 
+ function sendMessageToNativeHost(message) {
+     try {
+         if (nativePort) {
+             nativePort.postMessage(message);
+         }
+     } catch (error) {
+         console.error("Error sending message to native host:", error)
+     }
+ }
+ 
+ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+   if (request.url) {
+       sendMessageToNativeHost({url: request.url});
+   } else {
+     sendMessageToNativeHost(request);
+   }
+ 
+   sendResponse({ received: true });
+   return true
+ });
+ 
+ connectNative();

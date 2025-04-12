@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "Beatport Downloader",
   "version": "1.0",
-  "description": "Download Beatport tracks using a Go app",
+  "description": "Download tracks from Beatport using a native Go application",
   "background": {
     "service_worker": "background.js"
   },
@@ -23,7 +23,9 @@
   "permissions": [
     "activeTab",
     "storage",
-    "webNavigation"
+    "nativeMessaging"
   ],
-  "action": { "default_popup": "popup.html" }
+  "action": {
+    "default_popup": "popup.html"
+  }
 }
